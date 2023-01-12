@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: agent-ds
+  labels:
+    app: agent
+spec:
+  minReadySeconds: 10
+  selector: 
+    matchLabels:
+      app: agent
+  template:
+    metadata:
+      name: agent
+      labels:
+        app: agent
+        version: 1.2
+    spec:
+      containers: 
+        - name: agent
+          image: alpine:3
+          command:
+            - sleep
+            - 1d
+          ports:
+            - containerPort: 80
+              protocol: TCP          
