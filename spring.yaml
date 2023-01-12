@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: 	Deployment
+metadata:
+  name: springpetclinic-deploy
+  labels:
+    app: springpetclinic
+spec:
+  minReadySeconds: 5
+  replicas: 4
+  selector:
+    matchLabels:
+      app: springpetclinic
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      name: springpetclinic-pod
+      labels:
+        app: springpetclinic
+    spec:
+      containers:
+        - name: springpetclinic
+          image: 8688735853/spr:1.0
+          ports:
+            - containerPort: 8080
+              protocol: TCP       
+---
+apiVersion: v1
+kind: 	Service
+metadata:
+  name: springpetclinic-svc
+  labels:
+    app: springpetclinic
+spec:
+  type: LoadBalancer
+  selector: 
+    app: springpetclinic
+  ports:
+    - name: webserver
+      port: 8080
+      protocol: TCP
+      targetPort: 8080                     
