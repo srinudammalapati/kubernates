@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-depoly
+  labels:
+    app: jenkins
+spec:
+  minReadySeconds: 5
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jenkins
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      name: jenkins
+      labels:
+        app: jenkins
+        ver: 1.23
+    spec:
+      containers: 
+        - name: jenkins
+          image: jenkins:2.60.3
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+---
+apiVersion: v1
+kind: 	Service
+metadata:
+  name: jenkins-svc
+  labels:
+    app: jenkins
+spec:     
+  type: LoadBalancer
+  selector: 
+    app: jenkins
+    ver: 1.23
+  ports:
+    - name: webport
+      port: 8080
+      targetPort: 35000
+      protocol: TCP         
+  
